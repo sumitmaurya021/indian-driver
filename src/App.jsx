@@ -8,23 +8,24 @@ import PlaylistModal from './components/PlaylistModal';
 import { HIGHWAY_STATION_PRESETS } from './utils/truckShayaris';
 import './App.css';
 
+import { presenceTracker } from './utils/presenceTracker';
+
 export default function App() {
   const [playlistId, setPlaylistId] = useState(import.meta.env.VITE_YOUTUBE_PLAYLIST_ID || HIGHWAY_STATION_PRESETS[0].id);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFlashActive, setIsFlashActive] = useState(false);
-  const [driversCount, setDriversCount] = useState(534);
+  const [driversCount, setDriversCount] = useState(1);
   const [currentTrackInfo, setCurrentTrackInfo] = useState({
     title: "Barsaat Ke Mausam Mein",
     artist: "Kumar Sanu & Roop Kumar Rathod",
     cover: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&auto=format&fit=crop&q=80"
   });
 
-  // Simulated live drivers on highway counter
+  // Real-time live active website listeners counter
   useEffect(() => {
-    const interval = setInterval(() => {
-      setDriversCount(prev => prev + (Math.floor(Math.random() * 5) - 2));
-    }, 6000);
-    return () => clearInterval(interval);
+    presenceTracker.init((count) => {
+      setDriversCount(count);
+    });
   }, []);
 
   // Flash truck headlights when horn is triggered

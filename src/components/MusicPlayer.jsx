@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, SkipBack, SkipForward, Shuffle, ListMusic, Volume2, VolumeX } from 'lucide-react';
+import { presenceTracker } from '../utils/presenceTracker';
 
 export default function MusicPlayer({ 
   playlistId, 
@@ -17,6 +18,11 @@ export default function MusicPlayer({
 
   const playerRef = useRef(null);
   const progressIntervalRef = useRef(null);
+
+  // Sync listening state with presence tracker
+  useEffect(() => {
+    presenceTracker.setListeningState(isPlaying);
+  }, [isPlaying]);
 
   // Initialize YouTube Iframe API
   useEffect(() => {
@@ -112,11 +118,12 @@ export default function MusicPlayer({
     stopProgressTimer();
     progressIntervalRef.current = setInterval(() => {
       if (playerRef.current && playerRef.current.getCurrentTime) {
-        setCurrentTime(playerRef.current.getCurrentTime() || 0);
+        const cur = playerRef.current.getCurrentTime() || 0;
+        setCurrentTime(Math.floor(cur));
         const dur = playerRef.current.getDuration() || 0;
-        if (dur) setDuration(dur);
+        if (dur) setDuration(Math.floor(dur));
       }
-    }, 500);
+    }, 1000);
   };
 
   const stopProgressTimer = () => {
@@ -193,17 +200,17 @@ export default function MusicPlayer({
       {/* Hidden YouTube Iframe Container */}
       <div id="yt-audio-player" className="hidden pointer-events-none" />
 
-      {/* Main Glassmorphic Dock Container matching screenshot */}
-      <div className="relative bg-black/45 backdrop-blur-2xl border border-white/20 rounded-3xl p-3 sm:p-4 shadow-[0_16px_40px_rgba(0,0,0,0.6)] flex flex-col sm:flex-row items-center justify-between gap-3 text-white transition-all duration-300 hover:border-white/30">
+      {/* Main Glassmorphic Dock Container */}
+      <div className="relative bg-black/45 backdrop-blur-2xl border border-white/20 rounded-3xl p-3 sm:p-4 shadow-[0_16px_40px_rgba(0,0,0,0.6)] flex flex-col sm:flex-row items-center justify-between gap-3 text-white transition-all duration-300 hover:border-white/30 gpu-layer">
         
         {/* Track Thumbnail + Title & Time */}
         <div className="flex items-center space-x-3.5 w-full sm:w-auto min-w-0">
           {/* Animated Vinyl Cover Art */}
-          <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden shrink-0 border-2 border-white/20 shadow-md group">
+          <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden shrink-0 border-2 border-white/20 shadow-md group gpu-layer">
             <img 
               src={currentTrackInfo?.cover || "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&auto=format&fit=crop&q=80"} 
               alt="Track Artwork"
-              className={`w-full h-full object-cover ${isPlaying ? 'animate-[spin_12s_linear_infinite]' : ''}`}
+              className={`w-full h-full object-cover gpu-layer ${isPlaying ? 'animate-[spin_15s_linear_infinite]' : ''}`}
             />
             <div className="absolute inset-0 bg-black/20 rounded-full flex items-center justify-center">
               <div className="w-3 h-3 rounded-full bg-amber-400 border-2 border-black" />

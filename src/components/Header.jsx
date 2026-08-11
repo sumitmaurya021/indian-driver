@@ -27,7 +27,7 @@ export default function Header({
   };
 
   return (
-    <header className="relative z-20 w-full px-6 py-4 flex items-center justify-between text-white font-medium select-none">
+    <header className="relative z-20 w-full px-6 py-4 flex items-center justify-between text-white font-medium select-none gpu-layer">
       {/* Time Display (Top Left) */}
       <div className="flex items-center space-x-2 text-sm tracking-wide text-gray-200 bg-black/30 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 shadow-lg">
         <svg className="w-4 h-4 text-amber-400 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -40,7 +40,7 @@ export default function Header({
       <div className="flex items-center space-x-2 text-xs md:text-sm bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/15 shadow-lg">
         <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping inline-block" />
         <span className="font-semibold text-emerald-400">{driversCount}</span>
-        <span className="text-gray-300">on the highway</span>
+        <span className="text-gray-300">{driversCount === 1 ? 'listener on the highway' : 'listeners on the highway'}</span>
       </div>
 
       {/* Control Buttons (Top Right) */}

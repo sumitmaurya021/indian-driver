@@ -14,6 +14,20 @@ body, html, #root {
   margin: 0;
   padding: 0;
   font-family: 'Outfit', 'Hind', system-ui, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* GPU Hardware Acceleration Utilities for 60fps smoothness */
+.gpu-layer {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+/* Smooth Transitions */
+.smooth-transition {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Custom Scrollbar for drawers & modals */
