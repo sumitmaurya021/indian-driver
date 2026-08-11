@@ -53,13 +53,14 @@ export default function MusicPlayer({
         events: {
           onReady: (event) => {
             setPlayerReady(true);
-            event.target.setVolume(volume);
-            event.target.playVideo();
-            setIsPlaying(true);
+            try {
+              event.target.setVolume(volume);
+              event.target.playVideo();
+            } catch (e) {}
             updateTrackData();
           },
           onStateChange: (event) => {
-            // YT.PlayerState.PLAYING === 1, PAUSED === 2, ENDED === 0
+            // YT.PlayerState: PLAYING=1, PAUSED=2, ENDED=0, CUED=5, UNSTARTED=-1
             if (event.data === window.YT.PlayerState.PLAYING) {
               setIsPlaying(true);
               updateTrackData();
@@ -68,7 +69,13 @@ export default function MusicPlayer({
               setIsPlaying(false);
               stopProgressTimer();
             } else if (event.data === window.YT.PlayerState.ENDED) {
-              if (playerRef.current) playerRef.current.nextVideo();
+              if (playerRef.current && playerRef.current.nextVideo) {
+                playerRef.current.nextVideo();
+              }
+            } else if (event.data === -1 || event.data === 5) {
+              // Unstarted or Cued (Autoplay was blocked by browser)
+              setIsPlaying(false);
+              updateTrackData();
             }
           },
         },
@@ -81,6 +88,32 @@ export default function MusicPlayer({
       stopProgressTimer();
     };
   }, []);
+
+  // One-time first user interaction trigger for browser autoplay compliance
+  useEffect(() => {
+    if (!playerReady) return;
+
+    const handleFirstInteraction = () => {
+      if (playerRef.current && playerRef.current.playVideo && !isPlaying) {
+        try {
+          playerRef.current.playVideo();
+        } catch (e) {}
+      }
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('pointerdown', handleFirstInteraction);
+      window.removeEventListener('keydown', handleFirstInteraction);
+    };
+
+    window.addEventListener('click', handleFirstInteraction);
+    window.addEventListener('pointerdown', handleFirstInteraction);
+    window.addEventListener('keydown', handleFirstInteraction);
+
+    return () => {
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('pointerdown', handleFirstInteraction);
+      window.removeEventListener('keydown', handleFirstInteraction);
+    };
+  }, [playerReady, isPlaying]);
 
   // Update YouTube Playlist when prop changes
   useEffect(() => {
@@ -95,7 +128,9 @@ export default function MusicPlayer({
       } else {
         playerRef.current.loadVideoById(playlistId);
       }
-      setIsPlaying(true);
+      try {
+        playerRef.current.playVideo();
+      } catch (e) {}
     }
   }, [playlistId, playerReady]);
 
