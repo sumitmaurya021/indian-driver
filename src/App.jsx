@@ -1,122 +1,76 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import BackgroundVideo from './components/BackgroundVideo';
+import Header from './components/Header';
+import HeroSection from './components/HeroSection';
+import HornSoundboard from './components/HornSoundboard';
+import MusicPlayer from './components/MusicPlayer';
+import PlaylistModal from './components/PlaylistModal';
+import { HIGHWAY_STATION_PRESETS } from './utils/truckShayaris';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [playlistId, setPlaylistId] = useState(import.meta.env.VITE_YOUTUBE_PLAYLIST_ID || HIGHWAY_STATION_PRESETS[0].id);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFlashActive, setIsFlashActive] = useState(false);
+  const [driversCount, setDriversCount] = useState(534);
+  const [currentTrackInfo, setCurrentTrackInfo] = useState({
+    title: "Barsaat Ke Mausam Mein",
+    artist: "Kumar Sanu & Roop Kumar Rathod",
+    cover: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300&auto=format&fit=crop&q=80"
+  });
+
+  // Simulated live drivers on highway counter
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDriversCount(prev => prev + (Math.floor(Math.random() * 5) - 2));
+    }, 6000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Flash truck headlights when horn is triggered
+  const triggerHeadlightFlash = () => {
+    setIsFlashActive(true);
+    setTimeout(() => setIsFlashActive(false), 250);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <main className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden bg-slate-950 text-white font-sans">
+      {/* Background Highway Dark Atmosphere */}
+      <BackgroundVideo />
 
-      <div className="ticks"></div>
+      {/* Headlight Flash Overlay Effect */}
+      {isFlashActive && (
+        <div className="fixed inset-0 z-40 bg-amber-100/25 mix-blend-overlay pointer-events-none transition-opacity duration-100 animate-ping" />
+      )}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      {/* Top Navigation Header Bar */}
+      <Header 
+        onOpenPlaylistModal={() => setIsModalOpen(true)}
+        driversCount={driversCount}
+      />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      {/* Center Hero Section ("ट्रक वाला" Title + Slogans) */}
+      <HeroSection />
+
+      {/* Left Floating "Horn OK Please" & Modified Horn Soundboard */}
+      <HornSoundboard onTriggerFlash={triggerHeadlightFlash} />
+
+      {/* Bottom Floating Music Player Dock */}
+      <MusicPlayer 
+        playlistId={playlistId}
+        onTogglePlaylistModal={() => setIsModalOpen(true)}
+        currentTrackInfo={currentTrackInfo}
+        setCurrentTrackInfo={setCurrentTrackInfo}
+      />
+
+      {/* YouTube Playlist Selector Modal */}
+      <PlaylistModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        activePlaylistId={playlistId}
+        onSelectPlaylist={(id) => setPlaylistId(id)}
+      />
+    </main>
+  );
 }
 
-export default App
