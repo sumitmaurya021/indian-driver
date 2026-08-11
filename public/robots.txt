@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://indian-driver.web.app/sitemap.xml

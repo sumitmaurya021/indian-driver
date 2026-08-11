@@ -1,0 +1,16 @@
+{
+  "short_name": "IndianDriver",
+  "name": "इंडियन ड्राइवर (Indian Driver) - Highway Music & Horn Soundboard",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "display": "standalone",
+  "orientation": "any"
+}
