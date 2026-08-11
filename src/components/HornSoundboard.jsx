@@ -47,49 +47,62 @@ export default function HornSoundboard({ onTriggerFlash }) {
   }, []);
 
   return (
-    <div className="fixed left-4 sm:left-8 top-1/2 -translate-y-1/2 z-30 select-none gpu-layer">
-      {/* Main Floating "Horn OK Please" Button matching user image */}
-      <div className="relative group gpu-layer">
+    <div className="my-3 sm:my-0 sm:fixed sm:left-8 sm:top-1/2 sm:-translate-y-1/2 z-40 select-none flex flex-col items-center sm:block">
+      {/* Main Floating "Horn OK Please" Button */}
+      <div className="relative group">
         <button
           onClick={() => {
             playHorn(hornsList[0]);
             setIsOpen(!isOpen);
           }}
-          className={`flex items-center space-x-3 px-4 py-3 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-xl border border-white/20 hover:border-amber-400/50 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] transition-all duration-300 transform group-hover:scale-105 active:scale-95 text-white gpu-layer ${
-            activeHorn ? 'ring-4 ring-amber-400/50 bg-amber-950/60' : ''
+          className={`flex items-center space-x-2 sm:space-x-3 p-1.5 sm:p-2.5 pr-3 sm:pr-5 rounded-full bg-slate-950/85 hover:bg-slate-900/95 backdrop-blur-2xl border-2 border-amber-500/35 hover:border-amber-400/80 shadow-[0_12px_40px_rgba(0,0,0,0.7)] transition-all duration-300 transform hover:scale-105 active:scale-95 text-white overflow-hidden ${
+            activeHorn ? 'ring-4 ring-amber-400/50 bg-amber-950/90 border-amber-400' : ''
           }`}
         >
-          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-red-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-            <Volume2 className="w-4 h-4 text-white" />
+          {/* Glowing Metallic Horn Circle */}
+          <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-amber-400 via-orange-500 to-red-600 flex items-center justify-center text-slate-950 shadow-[0_0_20px_rgba(245,158,11,0.6)] shrink-0 transition-transform group-hover:scale-110">
+            <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 fill-slate-950 stroke-slate-950 font-bold" />
+            {activeHorn && (
+              <span className="absolute inset-0 rounded-full bg-amber-400/50 animate-ping" />
+            )}
           </div>
-          <div className="text-left leading-tight pr-1">
-            <div className="text-xs font-black tracking-wider text-amber-300 font-devanagari">
+
+          {/* Typography Details */}
+          <div className="text-left leading-none pr-1 min-w-0">
+            <div className="text-[11px] sm:text-sm font-extrabold tracking-wider text-amber-300 font-devanagari">
               हॉर्न ओके प्लीज
             </div>
-            <div className="text-[10px] text-gray-300 font-medium tracking-tight">
-              Horn ok pleaseeee
+            <div className="text-[9px] sm:text-[10px] text-amber-100/70 font-semibold tracking-wider uppercase mt-0.5 sm:mt-1 hidden xs:block">
+              Horn OK Please
             </div>
           </div>
-          <div className="ml-1 text-gray-400 group-hover:text-white transition-colors">
-            {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+
+          {/* Keyboard Hotkey Pill + Expand Arrow */}
+          <div className="flex items-center space-x-1 ml-0.5 border-l border-white/10 pl-1.5 sm:pl-2">
+            <span className="px-1.5 py-0.5 rounded bg-black/60 border border-amber-500/30 text-[9px] font-mono text-amber-400 hidden sm:inline-block">
+              H
+            </span>
+            <div className="text-amber-400/80 group-hover:text-white transition-colors">
+              {isOpen ? <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <ChevronUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+            </div>
           </div>
         </button>
-
-        {/* Hotkey hint tooltip */}
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur-md text-[10px] text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border border-white/10">
-          Press <kbd className="px-1 py-0.5 bg-gray-800 rounded text-amber-300 font-mono">H</kbd> or click
-        </div>
       </div>
 
       {/* Expandable Soundboard Drawer Panel */}
       {isOpen && (
-        <div className="mt-3 w-72 bg-black/60 backdrop-blur-2xl border border-white/15 rounded-2xl p-3 shadow-2xl space-y-2 animate-in fade-in slide-in-from-left-4 duration-200 gpu-layer">
-          <div className="flex items-center justify-between px-2 py-1 border-b border-white/10 text-xs font-semibold text-amber-300">
-            <span>INDIAN DRIVER HORNS</span>
-            <span className="text-[10px] text-gray-400">Keys 1-5</span>
+        <div className="mt-2.5 sm:mt-3.5 sm:absolute sm:top-full sm:left-0 w-64 sm:w-80 bg-slate-950/95 backdrop-blur-2xl border-2 border-amber-500/35 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-[0_25px_60px_rgba(0,0,0,0.9)] space-y-2.5 sm:space-y-3 animate-in fade-in slide-in-from-left-4 duration-200 overflow-hidden max-h-[55vh] overflow-y-auto">
+          <div className="flex items-center justify-between px-1 pb-1.5 border-b border-white/10 text-xs font-bold text-amber-300 tracking-wider">
+            <span className="flex items-center space-x-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span className="text-[11px] sm:text-xs">INDIAN HORNS</span>
+            </span>
+            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 font-mono">
+              Keys 1-5
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 gap-1.5 max-h-72 overflow-y-auto pr-1 custom-scrollbar">
+          <div className="grid grid-cols-1 gap-1.5 sm:gap-2 max-h-60 overflow-y-auto pr-1 custom-scrollbar">
             {hornsList.map((horn, idx) => {
               const IconComp = horn.icon;
               const isPlaying = activeHorn === horn.id;
@@ -97,21 +110,23 @@ export default function HornSoundboard({ onTriggerFlash }) {
                 <button
                   key={horn.id}
                   onClick={() => playHorn(horn)}
-                  className={`w-full flex items-center space-x-3 p-2 rounded-xl transition-all border text-left ${
+                  className={`w-full flex items-center space-x-2.5 sm:space-x-3 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl transition-all border text-left ${
                     isPlaying
-                      ? 'bg-amber-500/30 border-amber-400 text-white scale-[1.02]'
-                      : 'bg-white/5 hover:bg-white/10 border-white/5 hover:border-white/20 text-gray-200'
+                      ? 'bg-amber-500/30 border-amber-400 text-white scale-[1.02] shadow-[0_0_15px_rgba(245,158,11,0.3)]'
+                      : 'bg-white/5 hover:bg-amber-500/10 border-white/10 hover:border-amber-400/40 text-gray-200'
                   }`}
                 >
-                  <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${horn.color} flex items-center justify-center shrink-0 shadow`}>
-                    <IconComp className="w-3.5 h-3.5 text-white" />
+                  <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-br ${horn.color} flex items-center justify-center shrink-0 shadow-md`}>
+                    <IconComp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs font-bold truncate text-white flex items-center justify-between">
+                    <div className="text-[11px] sm:text-xs font-bold truncate text-white flex items-center justify-between">
                       <span>{horn.name}</span>
-                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-black/40 text-amber-300 font-mono">#{idx + 1}</span>
+                      <span className="text-[9px] px-1 py-0.2 rounded bg-black/50 text-amber-300 font-mono border border-white/10">
+                        #{idx + 1}
+                      </span>
                     </div>
-                    <div className="text-[10px] text-gray-400 truncate">{horn.sub}</div>
+                    <div className="text-[9px] sm:text-[10px] text-amber-200/70 truncate mt-0.5 font-medium">{horn.sub}</div>
                   </div>
                 </button>
               );
